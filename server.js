@@ -23,12 +23,26 @@ app.get("/", (req, res) => {
 
 app.get("/projects", async (req, res) => {
     try {
-        const projects = await Project.find();
-        res.status(200).json(projects);
+        const projects = await Project.find().select({"title": 1, "_id": 1});
+        res.status(200).json({ success: true, projects });
     }
     catch (err) {
         console.log(err);
-        res.status(500).json({ message: "Erro ao buscar projetos" });
+        res.status(500).json({ success: false, message: "Erro ao buscar projetos" });
+    }
+
+});
+
+app.get("/projects/:id", async (req, res) => {
+    const id = req.params.id;
+    
+    try {
+        const projects = await Project.findById(id);
+        res.status(200).json({ success: true, projects });
+    }
+    catch (err) {
+        console.log(err);
+        res.status(500).json({ success: false, message: "Erro ao buscar dados do projeto" });
     }
 
 });
